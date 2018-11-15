@@ -1,0 +1,30 @@
+{
+  "name": "xmlparser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "startb": "nodemon --exec babel-node index.js",
+    "start": "nodemon --ignore 'files/*.json' index.js",
+    "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./package-lock.json,./npm-debug.log,./fileNEW.txt,log.txt --copy-files",
+    "serve": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mongoose": "^5.3.12",
+    "morgan": "^1.9.1",
+    "rxjs": "^6.3.3",
+    "xml-stream": "^0.4.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.5",
+    "chalk": "^2.4.1",
+    "rimraf": "^2.6.2"
+  }
+}

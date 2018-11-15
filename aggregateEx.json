@@ -1,0 +1,27 @@
+{
+  "measurement": "tsp.ipv6.ipv6IfStatsInUnknownProtos",
+  "nedn": "DC=ims.mnc020.mcc334.3gppnetwork.org,g3SubNetwork=Mexico,g3ManagedElement=R5TEPETAS001",
+  "cbt": "20181020131000.0-0500",
+  "vn": "ERICSSON",
+  "events": [{
+      "mts": "20181020131500.0-0500",
+      "mv": [{
+        "moid": "tspL2IfName=Proc_m1_s13;en-1",
+        "r": 0
+      }, {
+        "moid": "tspL2IfName=Proc_m1_s13;tipct0",
+        "r": 0
+      }]
+    },
+    {
+      "mts": "20181020133000.0-0500",
+      "mv": [{
+        "moid": "tspL2IfName=Proc_m1_s13;en-1",
+        "r": 0
+      }, {
+        "moid": "tspL2IfName=Proc_m1_s13;tipct0",
+        "r": 0
+      }]
+    }
+  ]
+}

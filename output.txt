@@ -1,0 +1,23 @@
+import * as fs from 'fs';
+
+const fileName = 'file.txt';
+
+const reading = fs.readFile(fileName);
+reading.then((data) => {
+    console.log(data);
+}).catch((err) => {
+    console.log('err', err);
+});
+
+// (err, data) => {
+//     if (err) throw err;
+//     const newContent = transform(data);
+//     const newFileName = newFileName(fileName);
+//     fs.writeFile(newFileName, newContent, err => {
+//         if (err) throw err;
+//         fs.appendFile('log.txt', newFileName + ' written', (err) => {
+//             if (err) throw err;
+//             console.log('The "data to append" was appended to file!');
+//         });
+//     });
+// }
