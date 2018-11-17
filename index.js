@@ -1,19 +1,23 @@
 const {
-  getFiles,
-  directoryXml
+  getFiles
 } = require('./utilities/general');
+const directoryXml = require('./utilities/xmlSpecific');
 const {
   dbConnection,
   emitter
 } = require('./db/connection');
+const {
+  colorIt
+} = require('./utilities/general');
 
 const mainPath = './data';
 dbConnection();
 
-emitter.on('connected', () => startProcess());
+emitter.on('connected', () => getFilesAndSaveXmlData());
 
 
-function startProcess() {
+function getFilesAndSaveXmlData() {
+  console.log(colorIt.cyan('Starting process...'));
   // Get directories from mainPath
   getFiles(mainPath)
     // filter name directories that begin with a dot

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const XmlStream = require('xml-stream');
+const chalk = require('chalk');
+
 let counter = 0;
 
 // Function():null to log memoryUsage
@@ -22,34 +23,24 @@ function getFiles(path) {
         fs.readdir(path, (err, items) => (err ? reject(err) : resolve(items)));
     });
 }
-// Function(file:string):null to read xml file w/XmlStream : null
-function readXmlFile(file) {
-    const stream = fs.createReadStream(file);
-    let xml = new XmlStream(stream);
-    xml.collect('mv');
-    xml.on('endElement: mi', item => {
-        counter++;
-        const rPath = '../files/mi' + counter + '.json';
-        const name = path.join(__dirname, rPath);
-        const obj = JSON.stringify(item);
-        printTxt(name, obj);
-    });
-}
-// Function(path:string):null to get files from directory path and to read xml from them
-function directoryXml(path) {
-    // Get xml files from directory
-    getFiles(path)
-        // call readXmlFile() on each xml file found
-        .then(items => items.forEach(file => readXmlFile(path + file)))
-        .catch(err => {
-            throw err;
-        });
+//
+function createJSON(item) {
+    counter++;
+    const rPath = '../files/mi' + counter + '.json';
+    const name = path.join(__dirname, rPath);
+    const obj = JSON.stringify(item);
+    printTxt(name, obj);
 }
 
 module.exports = {
     getUsedMemory,
     printTxt,
-    readXmlFile,
     getFiles,
-    directoryXml
+    createJSON,
+    colorIt: {
+        cyan: chalk.bold.cyan,
+        yellow: chalk.bold.yellow,
+        red: chalk.bold.red,
+        magenta: chalk.bold.magenta
+    }
 };

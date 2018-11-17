@@ -1,13 +1,10 @@
 const mongoose = require('mongoose');
-const chalk = require('chalk');
 const dbURL = require('./property').db;
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
-
-const connected = chalk.bold.cyan;
-const error = chalk.bold.yellow;
-const disconnected = chalk.bold.red;
-const termination = chalk.bold.magenta;
+const {
+    colorIt
+} = require('../utilities/general');
 
 module.exports = {
     dbConnection: function () {
@@ -17,23 +14,23 @@ module.exports = {
         });
 
         mongoose.connection.on('connected', function () {
+            console.log(colorIt.cyan("Mongoose default connection is open to ", dbURL));
             eventEmitter.emit('connected');
-            console.log(connected("Mongoose default connection is open to ", dbURL));
         });
 
         mongoose.connection.on('error', function (err) {
+            console.log(colorIt.yellow("Mongoose default connection has occured " + err + " error"));
             eventEmitter.emit('error');
-            console.log(error("Mongoose default connection has occured " + err + " error"));
         });
 
         mongoose.connection.on('disconnected', function () {
+            console.log(colorIt.red("Mongoose default connection is disconnected"));
             eventEmitter.emit('disconnected');
-            console.log(disconnected("Mongoose default connection is disconnected"));
         });
 
         process.on('SIGINT', function () {
             mongoose.connection.close(function () {
-                console.log(termination("Mongoose default connection is disconnected due to application termination"));
+                console.log(colorIt.magenta("Mongoose default connection is disconnected due to application termination"));
                 process.exit(0)
             });
         });

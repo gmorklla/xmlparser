@@ -3,56 +3,33 @@ const Schema = mongoose.Schema;
 
 // First Schema
 const FirstSchema = new Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    created: {
-        type: Date,
-        default: Date.now
-    },
-    updated: {
-        type: Date,
-        default: Date.now
-    },
     measurement: {
         type: String,
-        required: true
+        required: true,
     },
     nedn: {
         type: String,
         required: true
     },
-    vn: {
+    moid: {
         type: String,
         required: true
     },
-    cbt: {
+    day: {
         type: Date,
         required: true
     },
-    events: [{
-        mts: {
-            type: Number,
-            required: true
-        },
-        mv: [{
-            moid: {
-                type: String
-            },
-            r: {
-                type: Number
-            }
-        }],
-        index: true
-    }]
+    values: [Number]
 });
 
 FirstSchema.index({
+    "day": -1,
     "measurement": 1,
     "nedn": 1,
-    "cbt": -1,
-    "events.mts": 1
+    "moid": 1
 }, {
     background: true,
-    expireAfterSeconds: 86400
+    unique: true
 });
 
 // Issue model
