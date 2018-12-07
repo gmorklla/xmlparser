@@ -11,7 +11,7 @@ module.exports = {
         const hours = Number(pieces[4]);
         const minutes = Number(pieces[5]);
         const tick = hours.toString() + '.' + minutes.toString();
-        return tick;
+        return [hours, minutes];
     },
     getDateData: (str, type) => {
         const pieces = str.match(regex);

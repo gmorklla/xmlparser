@@ -1,34 +1,44 @@
+const cron = require('node-cron');
 const {
   getFiles
 } = require('./utilities/general');
-const directoryXml = require('./utilities/xmlSpecific');
+const saveXmlFile = require('./utilities/xmlSpecific');
 const {
-  dbConnection,
-  emitter
+  connect,
+  disconnect
 } = require('./db/connection');
 const {
   colorIt
 } = require('./utilities/general');
+const {
+  getNewFiles,
+  removeFiles
+} = require('./retreiver');
 
-const mainPath = './data';
-dbConnection();
+const interval = require('./config/config').interval;
 
-emitter.on('connected', () => getFilesAndSaveXmlData());
+cron.schedule(interval, () => {
+  connectToDBAndSave();
+});
 
-
-function getFilesAndSaveXmlData() {
-  console.log(colorIt.cyan('Starting process...'));
-  // Get directories from mainPath
-  getFiles(mainPath)
-    // filter name directories that begin with a dot
-    .then(items => items.filter(item => /^[^.]/.test(item)))
-    // map directories name to full path w/mainPath constant
-    .then(directories =>
-      directories.map(directory => mainPath + '/' + directory + '/')
-    )
-    // call directoryXml() on each passed directory
-    .then(paths => paths.forEach(path => directoryXml(path)))
-    .catch(error => {
-      throw error;
+function connectToDBAndSave() {
+  const files = getNewFiles();
+  const date = new Date();
+  console.log(`Total number of files arrived up until ${date.toTimeString()}: ${files.length}`);
+  if (files.length > 0) {
+    files.forEach(file => {
+      console.log('Process', file);
+      saveXmlFile(file);
     });
+    removeFiles();
+    // connect()
+    //   .then(() => {
+    //     files.forEach(file => {
+    //       console.log('Process', file);
+    //       saveXmlFile(file);
+    //     });
+    //     removeFiles();
+    //   })
+    //   .catch(err => console.log(colorIt.red(err)));
+  }
 }

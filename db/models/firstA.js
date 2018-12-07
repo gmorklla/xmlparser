@@ -19,7 +19,7 @@ const FirstSchema = new Schema({
         type: Date,
         required: true
     },
-    values: [Number]
+    values: [{}]
 });
 
 FirstSchema.index({
