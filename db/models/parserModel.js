@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// First Schema
-const FirstSchema = new Schema({
+// Parser Schema
+const ParserSchema = new Schema({
     measurement: {
         type: String,
         required: true,
@@ -22,7 +22,7 @@ const FirstSchema = new Schema({
     values: [{}]
 });
 
-FirstSchema.index({
+ParserSchema.index({
     "day": -1,
     "measurement": 1,
     "nedn": 1,
@@ -33,6 +33,6 @@ FirstSchema.index({
 });
 
 // Issue model
-const First = mongoose.model('First', FirstSchema);
+const Parser = mongoose.model('Parser', ParserSchema);
 
-module.exports = First;
+module.exports = Parser;

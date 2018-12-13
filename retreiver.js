@@ -1,8 +1,7 @@
 const chokidar = require('chokidar');
 const path = require('./config/config').path;
+const logger = require('./utilities/logger');
 
-// Something to use when events are received.
-const log = console.log.bind(console);
 let files = [];
 
 // Initialize watcher.
@@ -14,21 +13,29 @@ const watcher = chokidar.watch(path, {
 // Add event listeners.
 watcher
     .on('add', path => {
-        log(`Files ${path} has been added`);
+        logger.info({
+            message: `Detected file`,
+            data: path
+        });
         files.push(path);
     })
-    .on('change', path => log(`File ${path} has been changed`))
-    .on('unlink', path => log(`File ${path} has been removed`));
+    .on('change', path => logger.info({
+        message: `Detected change on file`,
+        data: path
+    }))
+    .on('unlink', path => logger.info({
+        message: `Detected removed file`,
+        data: path
+    }));
 
-const removeFiles = () => {
-    files = [];
+const removeFile = (file) => {
+    let clone = [...files];
+    clone = clone.filter(val => val !== file);
+    files = clone;
 }
-
-const getFiles = () => {
-    return files;
-}
+const getFiles = () => files;
 
 module.exports = {
     getNewFiles: getFiles,
-    removeFiles: removeFiles
+    removeFile: removeFile
 };
