@@ -17,7 +17,11 @@ app.get('/', function (req, res) {
         .catch(err => {
             logger.error({
                 message: `Catch on server`,
+                data: file,
                 error: err
+            });
+            res.send({
+                result: false
             });
         });
 });
