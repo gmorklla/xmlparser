@@ -5,17 +5,16 @@ const {
   removeFile
 } = require('./utilities/retreiver');
 const interval = require('./config/config').interval;
+const db = require('./db/connectionB');
 const Files = require('./db/models/filesModel');
-const {
-  connect,
-  disconnect
-} = require('./db/connection');
 const logger = require('./utilities/logger');
 const request = require('request');
+
 // Cron schedule to call all parser process (get new file - parse xml file)
 cron.schedule(interval, () => {
   getFilesAndProcess();
 });
+
 // Main process
 async function getFilesAndProcess() {
   // Call to retreiver getFiles()
@@ -29,8 +28,6 @@ async function getFilesAndProcess() {
   });
   // If there are new files
   if (filteredFiles.length > 0) {
-    // Make connection to db
-    await connect();
     // Process each new file
     filteredFiles.forEach(file => {
       // Log start of process
@@ -55,15 +52,10 @@ async function getFilesAndProcess() {
     });
   }
 }
+
 // Compare files to those saved on db (those that already were processed)
 async function checkFilesInDb(files) {
   try {
-    // Check that there is a connection to db
-    const connection = mongoose.connection.readyState;
-    // If not connected, connect
-    if (connection !== 1) {
-      await connect();
-    }
     // Get files list from db
     const filesInDb = await Files.findById('files');
     // Filter
@@ -75,6 +67,7 @@ async function checkFilesInDb(files) {
     });
   }
 }
+
 // Call removeFile from retreiver so it is not processed again
 function removeFileF(val) {
   removeFile(val);
@@ -84,28 +77,35 @@ function removeFileF(val) {
     data: val
   });
 };
+
 // Make a request to server that will call the xml parse function
 function makeRequest(file) {
   return new Promise((resolve, reject) => {
     // Options passed to request
     const options = {
       method: 'GET',
-      uri: 'http://localhost:3000/',
+      uri: 'http://localhost:3000/parse',
       qs: {
         file: file
       }
     }
     // Simple request to server
     request(options, (err, res, body) => {
-      if (err) reject(err);
-      const rBody = JSON.parse(res.body);
-      // Result will be false if the function called from the service return an error
-      // that error will be logged before, so here is not necessary
-      if (!rBody.result) {
+      if (err) {
+        reject(err);
+      };
+      if (res) {
+        const rBody = JSON.parse(res.body);
+        // Result will be false if the function called from the service return an error
+        // that error will be logged before, so here is not necessary
+        if (!rBody.result) {
+          reject(false);
+        }
+        // If there is not error, resolve
+        resolve(rBody.file)
+      } else {
         reject(false);
       }
-      // If there is not error, resolve
-      resolve(rBody.file)
     });
   });
 }

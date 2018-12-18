@@ -3,8 +3,9 @@ const app = express();
 const pid = process.pid;
 const saveXmlFile = require('./xmlSpecific');
 const logger = require('./logger');
+const db = require('../db/connectionB');
 
-app.get('/', function (req, res) {
+app.get('/parse', function (req, res) {
     const file = req.query.file;
     saveXmlFile(file)
         .then(val => {

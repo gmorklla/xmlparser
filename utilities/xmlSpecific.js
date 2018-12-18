@@ -1,5 +1,4 @@
 const fs = require('fs');
-const mongoose = require('mongoose');
 const XmlStream = require('xml-stream');
 const {
   format,
@@ -7,10 +6,6 @@ const {
 } = require('./formatDate');
 const Parser = require('../db/models/parserModel');
 const Files = require('../db/models/filesModel');
-const {
-  connect,
-  disconnect
-} = require('../db/connection');
 const logger = require('./logger');
 
 function saveXmlFile(file) {
@@ -91,10 +86,6 @@ function saveXmlFile(file) {
 }
 
 async function saveFile(file) {
-  const connection = mongoose.connection.readyState;
-  if (connection !== 1) {
-    await connect();
-  }
   return Files.findOneAndUpdate({
     _id: 'files'
   }, {
@@ -108,10 +99,6 @@ async function saveFile(file) {
 }
 
 async function save(docs) {
-  const connection = mongoose.connection.readyState;
-  if (connection !== 1) {
-    await connect();
-  }
   return Parser.bulkWrite(docs);
 }
 
